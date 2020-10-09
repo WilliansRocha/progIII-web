@@ -18,7 +18,7 @@
     "pacientesPessoas": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:5101;http://localhost:5100;http://192.168.12.102:5100;https://192.168.12.102:5101",
+      "applicationUrl": "https://localhost:5101;http://localhost:5100;",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

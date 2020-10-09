@@ -3,27 +3,41 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using pacientesPessoas.Models;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
+using Uri = System.Uri;
 
 namespace pacientesPessoas.Controllers
 {
     public class PacientesController : Controller
     {
         private readonly ILogger<PacientesController> logger;
+        private readonly HttpClient client;
 
         public PacientesController(ILogger<PacientesController> logger){
             this.logger = logger;
+            client = new HttpClient{
+                BaseAddress = new Uri("http://localhost:5000/api/")
+            };
         }
 
         public IActionResult Index(){
+            var responseString = GetPacientes().Result;
+
              //criar uma lista de pacientes:
-            var listaPacientes = new List<Pacientes>(){
-                new Pacientes(1,5,"01/09/2020","Teste1",1),
-                new Pacientes(2,6,"02/09/2020","Teste2",2),
-                new Pacientes(3,7,"03/09/2020","Teste3",3),
-                new Pacientes(4,8,"04/09/2020","Teste4",4),
-                new Pacientes(5,9,"05/09/2020","Teste5",5),
-            };
+            var listaPacientes = JsonConvert.DeserializeObject<IEnumerable<Pacientes>>(responseString);
+
             return View(listaPacientes);
+        }
+
+        async Task<string> GetPacientes(){
+
+            HttpResponseMessage response = await client.GetAsync("pacientes");
+
+            string responseBody = await response.Content.ReadAsStringAsync();
+            
+            return responseBody;
         }
 
         public IActionResult Editar(){
